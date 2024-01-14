@@ -40,7 +40,7 @@ relay_box = Box(app, layout="grid")
 # Create the relay buttons
 relay_buttons = []
 for i in range(8):
-    relay_button = PushButton(relay_box, text="Relay {}".format(i+1), grid=[i, 0], command=toggle_relay_state)
+    relay_button = PushButton(relay_box, text="Relay {}".format(i+1), grid=[i, 0], command=lambda button=relay_button: toggle_relay_state(button))
     relay_buttons.append(relay_button)
 
 
@@ -49,7 +49,3 @@ app.when_closed = GPIO.cleanup
 
 # Run the app
 app.display()
-
-
-# relay_state = 0b00000001  # Set the state of the relays (1 = ON, 0 = OFF)
-# shift_data(relay_state)  # Shift the data into the shift register
