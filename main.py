@@ -50,7 +50,7 @@ relay_box = Box(app, layout="grid")
 # Create the relay buttons
 relay_buttons = []
 for i in range(16):
-    relay_button = PushButton(relay_box, text="Relay {}".format(i+1), grid=[i, 0], command=lambda: toggle_relay_state(i))
+    relay_button = PushButton(relay_box, text="Relay {}".format(i+1), grid=[i % 6, i // 6], command=lambda: toggle_relay_state(i))
     relay_buttons.append(relay_button)
     
 # Clean up GPIO after the app is closed
