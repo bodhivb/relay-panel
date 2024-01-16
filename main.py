@@ -12,7 +12,10 @@ GPIO.setup(DATA_PIN, GPIO.OUT)
 GPIO.setup(CLOCK_PIN, GPIO.OUT)
 GPIO.setup(LATCH_PIN, GPIO.OUT)
 
-# Function to shift data into the shift register
+# State array to save which button is pressed
+button_state = [False] * 16
+
+# Function to shift data to the shift register
 def shift_data(data):
     for bit in range(16):
         GPIO.output(DATA_PIN, (data >> bit) & 1)
@@ -24,11 +27,17 @@ def shift_data(data):
 
 # Function to toggle the relay state
 def toggle_relay_state(index):
-    rb = relay_buttons[index]
-    rb.toggle()
+    print ("Button {} pressed".format(index))
+    button_state[index] = not button_state[index]
+
+    if button_state[index]:
+        relay_buttons[index].bg = "green"
+    else:
+        relay_buttons[index].bg = None
+
     relay_state = 0b0000000000000000
-    for i, button in enumerate(relay_buttons):
-        if button.value:
+    for i, state in enumerate(button_state):
+        if state:
             relay_state |= (1 << i)
     shift_data(relay_state)
 
