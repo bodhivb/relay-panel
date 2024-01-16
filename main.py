@@ -17,13 +17,23 @@ button_state = [False] * 16
 
 # Function to shift data to the shift register
 def shift_data(data):
+    #put latch down to start data sending
+    GPIO.output(CLOCK_PIN, GPIO.LOW)
+    GPIO.output(LATCH_PIN, GPIO.LOW)
+    GPIO.output(CLOCK_PIN, GPIO.HIGH)
+    
+    # Transfer each bit of data to the shift register
     for bit in range(16):
+        GPIO.output(CLOCK_PIN, GPIO.LOW)
         GPIO.output(DATA_PIN, (data >> bit) & 1)
         GPIO.output(CLOCK_PIN, GPIO.HIGH)
-        GPIO.output(CLOCK_PIN, GPIO.LOW)
 
+    #put latch up to finish data sending
+    GPIO.output(CLOCK_PIN, GPIO.LOW)
     GPIO.output(LATCH_PIN, GPIO.HIGH)
-    GPIO.output(LATCH_PIN, GPIO.LOW)
+    GPIO.output(CLOCK_PIN, GPIO.HIGH)
+
+    print("Data shifted: {}".format(data))
 
 # Function to toggle the relay state
 def toggle_relay_state(index):
@@ -39,6 +49,8 @@ def toggle_relay_state(index):
     for i, state in enumerate(button_state):
         if state:
             relay_state |= (1 << i)
+
+    print ("Relay state: {}".format(relay_state))
     shift_data(relay_state)
 
 # Create the app
