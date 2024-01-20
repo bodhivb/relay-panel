@@ -94,9 +94,9 @@ app = App(title="Relay Panel", width=1920, height=550)
 footer = Box(app, width="fill", align="bottom")
 
 # Button to switch to relay box
-PushButton(footer, text="Relay Box", command=lambda: switch_page(relay_box)))
+PushButton(footer, text="Relay Box", command=lambda: switch_page(relay_box))
 # Button to switch to switch box
-PushButton(footer, text="Program Box", command=lambda: switch_page(program_box)))
+PushButton(footer, text="Program Box", command=lambda: switch_page(program_box))
 
 
 # Create a box to hold the relay buttons
