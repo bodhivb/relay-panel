@@ -39,8 +39,7 @@ def relay_state_toggle(index, state):
         pin = RELAY_6_PIN
     else:
         print("Invalid index")
-    
-    GPIO.output(pin, state)
+    GPIO.output(pin, not state)
 
 # Function to turn off all relay pins
 def turn_off_all_relays():
@@ -48,7 +47,6 @@ def turn_off_all_relays():
         relay_state_toggle(i, False)
         button_state[i] = False
         relay_buttons[i].bg = None
-
 
 # Function to toggle the relay state
 def toggle_relay_state(index):
@@ -65,7 +63,7 @@ def toggle_relay_state(index):
 
 # Function to toggle the relay states periodically
 def toggle_relays_periodically():
-    while True:
+    while program > 0:
         if program == 0:
             time.sleep(1)
         elif program == 1:
@@ -85,6 +83,11 @@ def toggle_relays_periodically():
                 relay_state_toggle(3, False)
                 time.sleep(0.2)
         elif program == 3:
+            for o in range(6):
+                relay_state_toggle(o, True)
+            time.sleep(1)
+            for p in range(6):
+                relay_state_toggle(p, False)
             time.sleep(1)
 
 # Create the app
@@ -114,11 +117,11 @@ relay_buttons = []
 
 # 3 LEFT LAMO SWTICH MODEL
 # 3 RIGHT LAMP SWITCH MODEL
-relay_buttons.append(PushButton(relay_box, text="Links lampen", grid=[0, 0], command=lambda: toggle_relay_state(0)))
-relay_buttons.append(PushButton(relay_box, text="Rechts lampen", grid=[1, 0], command=lambda: toggle_relay_state(1)))
+relay_buttons.append(PushButton(relay_box, text="Links lampen", grid=[0, 0], command=lambda: toggle_relay_state(2)))
+relay_buttons.append(PushButton(relay_box, text="Rechts lampen", grid=[1, 0], command=lambda: toggle_relay_state(3)))
 
-relay_buttons.append(PushButton(relay_box, text="Skull lampen", grid=[0, 2], command=lambda: toggle_relay_state(2)))
-relay_buttons.append(PushButton(relay_box, text="Led bar", grid=[1, 2], command=lambda: toggle_relay_state(3)))
+relay_buttons.append(PushButton(relay_box, text="Skull lampen", grid=[0, 2], command=lambda: toggle_relay_state(1)))
+relay_buttons.append(PushButton(relay_box, text="Led bar", grid=[1, 2], command=lambda: toggle_relay_state(0)))
 
 relay_buttons.append(PushButton(relay_box, text="Links model", grid=[0, 1], command=lambda: toggle_relay_state(4)))
 relay_buttons.append(PushButton(relay_box, text="Rechts model", grid=[1, 1], command=lambda: toggle_relay_state(5)))
@@ -128,7 +131,8 @@ relay_buttons.append(PushButton(relay_box, text="Reset", grid=[0, 3], command=la
 PushButton(program_box, text="Relax", grid=[0, 0], command=lambda: start_program(1))
 PushButton(program_box, text="Politie", grid=[1, 0], command=lambda: start_program(2))
 PushButton(program_box, text="Disco", grid=[2, 0], command=lambda: start_program(3))
-
+PushButton(program_box, text="Run auto", grid=[0, 2], command=lambda: toggle_relays_periodically())
+PushButton(program_box, text="Stop", grid=[2, 2], command=lambda: start_program(0))
 
 program_box.hide()
 # Function to switch the page box
@@ -143,7 +147,6 @@ def toggle_relay_state(index):
     program = 0
     button_state[index] = not button_state[index]
     relay_state_toggle(index, button_state[index])
-    
     if button_state[index]:
         relay_buttons[index].bg = "green"
     else:
@@ -158,7 +161,6 @@ def start_program(index):
 def on_close():
     for i in range(6):
         relay_state_toggle(i, False)
-
     GPIO.cleanup()
     app.destroy()
 
@@ -166,7 +168,7 @@ def on_close():
 app.when_closed = on_close
 
 # Start toggling the relay states periodically
-toggle_relays_periodically()
+# toggle_relays_periodically()
 
 # Run the app
 app.display()
